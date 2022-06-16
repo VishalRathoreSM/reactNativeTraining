@@ -10,6 +10,7 @@ import {
   TextInput,
   View,
   TouchableWithoutFeedback,
+  ActivityIndicator,
   Platform,
   Keyboard,
   Alert,
@@ -35,6 +36,7 @@ const defaultFormValues = {
 
 function BookForm() {
   const [formValues, setFormValues] = useState(defaultFormValues);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {bookName, authorName, price, email, website, displayBook} = formValues;
 
@@ -52,9 +54,8 @@ function BookForm() {
       key: 'authorName',
     },
     {
-      key: 'publisher',
-      Comp: () => (
-        <View style={styles.formGroup}>
+      comp: (
+        <View key="publisher" style={styles.formGroup}>
           <Text style={styles.label}>Publishers</Text>
           <SelectDropdown
             data={dropdownData}
@@ -86,9 +87,8 @@ function BookForm() {
     {label: 'Email', keyboardType: 'email-address', value: email, key: 'email'},
     {label: 'Website', keyboardType: 'url', value: website, key: 'website'},
     {
-      key: 'displayBook',
-      Comp: () => (
-        <View style={styles.checkboxContainer}>
+      comp: (
+        <View key="displayBook" style={styles.checkboxContainer}>
           <CheckBox
             value={displayBook}
             onValueChange={value => handleFieldChange('displayBook', value)}
@@ -110,6 +110,7 @@ function BookForm() {
     for (const field of reqFields) {
       if (formValues[field].toString().trim() === '') {
         Alert.alert('Enter required fields');
+        setIsSubmitting(false);
         return false;
       }
     }
@@ -117,24 +118,22 @@ function BookForm() {
   };
 
   const handleSubmit = () => {
+    setIsSubmitting(true);
     validateForm() &&
       axios
         .post(url, formValues)
-        .then(res => {
-          console.log(res);
+        .then(_ => {
           Alert.alert('Submitted Successfully');
           setFormValues(defaultFormValues);
         })
-        .catch(err => {
-          console.log(err);
-          Alert.alert('Something went wrong');
-        });
+        .catch(_ => Alert.alert('Something went wrong'))
+        .finally(() => setIsSubmitting(false));
   };
 
   return (
     <View style={{flex: 1}}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : null}
         keyboardVerticalOffset={0}
         style={{flex: 1}}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -142,34 +141,39 @@ function BookForm() {
             <View style={styles.header}>
               <Text style={styles.headerText}>Library Form</Text>
             </View>
-
             <ScrollView style={{flex: 1}}>
               <View style={styles.form}>
-                {formFields.map(({Comp, label, key, value, keyboardType}) =>
-                  Comp ? (
-                    <Comp key={key} />
-                  ) : (
-                    <View key={key} style={styles.formGroup}>
-                      <Text style={styles.label}>
-                        {label} <Text style={styles.req}>*</Text>{' '}
-                      </Text>
-                      <TextInput
-                        keyboardType={keyboardType}
-                        placeholder={label}
-                        style={styles.input}
-                        value={value}
-                        onChangeText={value => handleFieldChange(key, value)}
-                      />
-                    </View>
-                  ),
+                {formFields.map(
+                  ({comp, label, key, value, keyboardType}) =>
+                    comp || (
+                      <View key={key} style={styles.formGroup}>
+                        <Text style={styles.label}>
+                          {label} <Text style={styles.req}>*</Text>{' '}
+                        </Text>
+                        <TextInput
+                          keyboardType={keyboardType}
+                          placeholder={label}
+                          style={styles.input}
+                          value={value}
+                          onChangeText={value => handleFieldChange(key, value)}
+                        />
+                      </View>
+                    ),
                 )}
               </View>
             </ScrollView>
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-      <Pressable onPress={handleSubmit} style={styles.submitBtn}>
-        <Text style={styles.submitBtnText}>Submit</Text>
+      <Pressable
+        onPress={handleSubmit}
+        disabled={isSubmitting}
+        style={styles.submitBtn}>
+        {isSubmitting ? (
+          <ActivityIndicator size="small" color="#0000ff" />
+        ) : (
+          <Text style={styles.submitBtnText}>Submit</Text>
+        )}
       </Pressable>
     </View>
   );
