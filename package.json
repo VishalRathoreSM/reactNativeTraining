@@ -14,6 +14,7 @@
     "@react-native-community/checkbox": "^0.5.12",
     "@react-native-picker/picker": "^2.4.1",
     "@reduxjs/toolkit": "^1.8.2",
+    "axios": "^0.27.2",
     "react": "17.0.2",
     "react-native": "0.68.2",
     "react-native-select-dropdown": "^2.0.3",

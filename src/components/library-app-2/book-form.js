@@ -12,22 +12,29 @@ import {
   TouchableWithoutFeedback,
   Platform,
   Keyboard,
+  Alert,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import SelectDropdown from 'react-native-select-dropdown';
+import axios from 'axios';
 
-const data = ['Vishal', 'nishant', 'Vicky'];
+const dropdownData = ['Vishal', 'Nishant', 'Vicky'];
+const url = 'https://library-mock-server.herokuapp.com/';
+
+const reqFields = ['bookName', 'authorName', 'price', 'email', 'website'];
+
+const defaultFormValues = {
+  bookName: '',
+  authorName: '',
+  publisher: '',
+  price: '',
+  email: '',
+  website: '',
+  displayBook: false,
+};
 
 function BookForm() {
-  const [formValues, setFormValues] = useState({
-    bookName: '',
-    authorName: '',
-    publisher: '',
-    price: '',
-    email: '',
-    website: '',
-    displayBook: false,
-  });
+  const [formValues, setFormValues] = useState(defaultFormValues);
 
   const {bookName, authorName, price, email, website, displayBook} = formValues;
 
@@ -50,29 +57,25 @@ function BookForm() {
         <View style={styles.formGroup}>
           <Text style={styles.label}>Publishers</Text>
           <SelectDropdown
-            data={data}
+            data={dropdownData}
             defaultButtonText="Select a publisher"
             onSelect={selectedItem => {
               handleFieldChange('publisher', selectedItem);
             }}
-            buttonTextAfterSelection={selectedItem => {
-              return selectedItem;
-            }}
-            rowTextForSelection={item => {
-              return item;
-            }}
+            buttonTextAfterSelection={selectedItem => selectedItem}
+            rowTextForSelection={item => item}
             buttonStyle={styles.dropdownBtnStyle}
             buttonTextStyle={styles.dropdownBtnTxtStyle}
             renderDropdownIcon={isOpened => {
               return (
                 <FontAwesome
                   name={isOpened ? 'chevron-up' : 'chevron-down'}
-                  color={'#444'}
+                  color="#444"
                   size={18}
                 />
               );
             }}
-            dropdownIconPosition={'right'}
+            dropdownIconPosition="right"
             rowStyle={styles.dropdownRowStyle}
             rowTextStyle={styles.dropdownRowTxtStyle}
           />
@@ -103,7 +106,30 @@ function BookForm() {
     setFormValues(prevFormValues => ({...prevFormValues, [field]: value}));
   };
 
-  const handleSubmit = () => {};
+  const validateForm = () => {
+    for (const field of reqFields) {
+      if (formValues[field].toString().trim() === '') {
+        Alert.alert('Enter required fields');
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const handleSubmit = () => {
+    validateForm() &&
+      axios
+        .post(url, formValues)
+        .then(res => {
+          console.log(res);
+          Alert.alert('Submitted Successfully');
+          setFormValues(defaultFormValues);
+        })
+        .catch(err => {
+          console.log(err);
+          Alert.alert('Something went wrong');
+        });
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -142,9 +168,7 @@ function BookForm() {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-      <Pressable
-        onPress={handleSubmit}
-        style={({pressed}) => [styles.submitBtn]}>
+      <Pressable onPress={handleSubmit} style={styles.submitBtn}>
         <Text style={styles.submitBtnText}>Submit</Text>
       </Pressable>
     </View>
