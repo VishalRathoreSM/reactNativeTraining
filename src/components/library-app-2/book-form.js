@@ -9,6 +9,9 @@ import {
   Text,
   TextInput,
   View,
+  TouchableWithoutFeedback,
+  Platform,
+  Keyboard,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -103,40 +106,48 @@ function BookForm() {
   const handleSubmit = () => {};
 
   return (
-    <KeyboardAvoidingView enabled behavior="padding" style={{flex: 1}}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Library Form</Text>
-        </View>
-        <ScrollView style={{flex: 1}}>
-          <View style={styles.form}>
-            {formFields.map(({Comp, label, key, value, keyboardType}) =>
-              Comp ? (
-                <Comp key={key} />
-              ) : (
-                <View key={key} style={styles.formGroup}>
-                  <Text style={styles.label}>
-                    {label} <Text style={styles.req}>*</Text>{' '}
-                  </Text>
-                  <TextInput
-                    keyboardType={keyboardType}
-                    placeholder={label}
-                    style={styles.input}
-                    value={value}
-                    onChangeText={value => handleFieldChange(key, value)}
-                  />
-                </View>
-              ),
-            )}
+    <View style={{flex: 1}}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={0}
+        style={{flex: 1}}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <Text style={styles.headerText}>Library Form</Text>
+            </View>
+
+            <ScrollView style={{flex: 1}}>
+              <View style={styles.form}>
+                {formFields.map(({Comp, label, key, value, keyboardType}) =>
+                  Comp ? (
+                    <Comp key={key} />
+                  ) : (
+                    <View key={key} style={styles.formGroup}>
+                      <Text style={styles.label}>
+                        {label} <Text style={styles.req}>*</Text>{' '}
+                      </Text>
+                      <TextInput
+                        keyboardType={keyboardType}
+                        placeholder={label}
+                        style={styles.input}
+                        value={value}
+                        onChangeText={value => handleFieldChange(key, value)}
+                      />
+                    </View>
+                  ),
+                )}
+              </View>
+            </ScrollView>
           </View>
-        </ScrollView>
-        <Pressable
-          onPress={handleSubmit}
-          style={({pressed}) => [styles.submitBtn]}>
-          <Text style={styles.submitBtnText}>Submit</Text>
-        </Pressable>
-      </View>
-    </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+      <Pressable
+        onPress={handleSubmit}
+        style={({pressed}) => [styles.submitBtn]}>
+        <Text style={styles.submitBtnText}>Submit</Text>
+      </Pressable>
+    </View>
   );
 }
 
@@ -172,7 +183,6 @@ const styles = StyleSheet.create({
   },
   form: {
     flex: 1,
-    justifyContent: 'flex-start',
     alignItems: 'center',
   },
   formGroup: {
