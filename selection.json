@@ -1,0 +1,169 @@
+// {
+//   "IcoMoonType": "selection",
+//   "icons": [
+//     {
+//       "icon": {
+//         "paths": [
+//           "M1024 608l-192-192v-288h-128v160l-192-192-512 512v32h128v320h320v-192h128v192h320v-320h128z"
+//         ],
+//         "tags": ["home", "house"],
+//         "defaultCode": 59650,
+//         "grid": 16,
+//         "attrs": []
+//       },
+//       "attrs": [],
+//       "properties": {
+//         "ligatures": "home3, house3",
+//         "name": "home3",
+//         "order": 2,
+//         "id": 3,
+//         "prevSize": 32,
+//         "code": 59650
+//       },
+//       "setIdx": 0,
+//       "setId": 1,
+//       "iconIdx": 2
+//     },
+//     {
+//       "icon": {
+//         "paths": [
+//           "M0 1024h512v-1024h-512v1024zM320 128h128v128h-128v-128zM320 384h128v128h-128v-128zM320 640h128v128h-128v-128zM64 128h128v128h-128v-128zM64 384h128v128h-128v-128zM64 640h128v128h-128v-128zM576 320h448v64h-448zM576 1024h128v-256h192v256h128v-576h-448z"
+//         ],
+//         "tags": ["office", "buildings", "work"],
+//         "defaultCode": 59651,
+//         "grid": 16,
+//         "attrs": []
+//       },
+//       "attrs": [],
+//       "properties": {
+//         "ligatures": "office, buildings",
+//         "name": "office",
+//         "order": 3,
+//         "id": 4,
+//         "prevSize": 32,
+//         "code": 59651
+//       },
+//       "setIdx": 0,
+//       "setId": 1,
+//       "iconIdx": 3
+//     },
+//     {
+//       "icon": {
+//         "paths": [
+//           "M864 0c88.364 0 160 71.634 160 160 0 36.020-11.91 69.258-32 96l-64 64-224-224 64-64c26.742-20.090 59.978-32 96-32zM64 736l-64 288 288-64 592-592-224-224-592 592zM715.578 363.578l-448 448-55.156-55.156 448-448 55.156 55.156z"
+//         ],
+//         "tags": ["pencil", "write", "edit"],
+//         "defaultCode": 59653,
+//         "grid": 16,
+//         "attrs": []
+//       },
+//       "attrs": [],
+//       "properties": {
+//         "ligatures": "pencil, write",
+//         "name": "pencil",
+//         "order": 4,
+//         "id": 6,
+//         "prevSize": 32,
+//         "code": 59653
+//       },
+//       "setIdx": 0,
+//       "setId": 1,
+//       "iconIdx": 5
+//     },
+//     {
+//       "icon": {
+//         "paths": [
+//           "M0 128v768h1024v-768h-1024zM192 832h-128v-128h128v128zM192 576h-128v-128h128v128zM192 320h-128v-128h128v128zM768 832h-512v-640h512v640zM960 832h-128v-128h128v128zM960 576h-128v-128h128v128zM960 320h-128v-128h128v128zM384 320v384l256-192z"
+//         ],
+//         "tags": ["film", "video", "movie", "tape", "play"],
+//         "defaultCode": 59667,
+//         "grid": 16,
+//         "attrs": []
+//       },
+//       "attrs": [],
+//       "properties": {
+//         "ligatures": "film, video2",
+//         "name": "film",
+//         "order": 6,
+//         "id": 20,
+//         "prevSize": 32,
+//         "code": 59667
+//       },
+//       "setIdx": 0,
+//       "setId": 1,
+//       "iconIdx": 19
+//     },
+//     {
+//       "icon": {
+//         "paths": [
+//           "M384 288c0-88.366 71.634-160 160-160s160 71.634 160 160c0 88.366-71.634 160-160 160s-160-71.634-160-160zM0 288c0-88.366 71.634-160 160-160s160 71.634 160 160c0 88.366-71.634 160-160 160s-160-71.634-160-160zM768 608v-96c0-35.2-28.8-64-64-64h-640c-35.2 0-64 28.8-64 64v320c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64v-96l256 160v-448l-256 160zM640 768h-512v-192h512v192z"
+//         ],
+//         "tags": ["video-camera", "video", "media", "film", "movie"],
+//         "defaultCode": 59668,
+//         "grid": 16,
+//         "attrs": []
+//       },
+//       "attrs": [],
+//       "properties": {
+//         "ligatures": "video-camera, video3",
+//         "name": "video-camera",
+//         "order": 7,
+//         "id": 21,
+//         "prevSize": 32,
+//         "code": 59668
+//       },
+//       "setIdx": 0,
+//       "setId": 1,
+//       "iconIdx": 20
+//     },
+//     {
+//       "icon": {
+//         "width": 1088,
+//         "paths": [
+//           "M640 64c247.424 0 448 200.576 448 448s-200.576 448-448 448v-96c94.024 0 182.418-36.614 248.902-103.098s103.098-154.878 103.098-248.902c0-94.022-36.614-182.418-103.098-248.902s-154.878-103.098-248.902-103.098c-94.022 0-182.418 36.614-248.902 103.098-51.14 51.138-84.582 115.246-97.306 184.902h186.208l-224 256-224-256h164.57c31.060-217.102 217.738-384 443.43-384zM832 448v128h-256v-320h128v192z"
+//         ],
+//         "tags": ["history", "time", "archive", "past"],
+//         "defaultCode": 59725,
+//         "grid": 16,
+//         "attrs": []
+//       },
+//       "attrs": [],
+//       "properties": {
+//         "ligatures": "history, time",
+//         "name": "history",
+//         "order": 5,
+//         "id": 78,
+//         "prevSize": 32,
+//         "code": 59725
+//       },
+//       "setIdx": 0,
+//       "setId": 1,
+//       "iconIdx": 77
+//     }
+//   ],
+//   "height": 1024,
+//   "metadata": {"name": "icomoon"},
+//   "preferences": {
+//     "showGlyphs": true,
+//     "showQuickUse": true,
+//     "showQuickUse2": true,
+//     "showSVGs": true,
+//     "fontPref": {
+//       "prefix": "icon-",
+//       "metadata": {"fontFamily": "icomoon"},
+//       "metrics": {"emSize": 1024, "baseline": 6.25, "whitespace": 50},
+//       "embed": false
+//     },
+//     "imagePref": {
+//       "prefix": "icon-",
+//       "png": true,
+//       "useClassSelector": true,
+//       "color": 0,
+//       "bgColor": 16777215,
+//       "classSelector": ".icon"
+//     },
+//     "historySize": 50,
+//     "showCodes": true,
+//     "gridSize": 16
+//   }
+// }
