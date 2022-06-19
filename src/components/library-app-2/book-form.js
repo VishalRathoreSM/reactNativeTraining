@@ -1,15 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
   StyleSheet,
-  KeyboardAvoidingView,
-  ScrollView,
   Pressable,
   Text,
   View,
-  TouchableWithoutFeedback,
   ActivityIndicator,
-  Platform,
-  Keyboard,
   Alert,
   SafeAreaView,
 } from 'react-native';
