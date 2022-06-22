@@ -15,12 +15,6 @@ const icons = [
     customIcon: true,
   },
   {
-    text: '3. Pencil',
-    fontFamily: pencilIcon.fontFamily,
-    content: pencilIcon.content,
-    customIcon: true,
-  },
-  {
     text: '4. History',
     fontFamily: historyIcon.fontFamily,
     content: historyIcon.content,
