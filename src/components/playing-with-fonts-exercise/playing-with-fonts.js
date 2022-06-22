@@ -1,20 +1,31 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-} from 'react-native';
+import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import IconAntDesign from 'react-native-vector-icons/AntDesign';
-import CustomIcon from './custom-icon';
+import {customIcons} from '../../constants/custom-icons';
+
+const {pencil: pencilIcon, history: historyIcon} = customIcons;
 
 const icons = [
   {text: '1. Caret up', name: 'caretup', customIcon: false},
   {text: '2. Caret down', name: 'caretdown', customIcon: false},
-  {text: '3. Pencil', name: 'pencil', customIcon: true},
-  {text: '4. History', name: 'history', customIcon: true},
+  {
+    text: '3. Pencil',
+    fontFamily: pencilIcon.fontFamily,
+    content: pencilIcon.content,
+    customIcon: true,
+  },
+  {
+    text: '3. Pencil',
+    fontFamily: pencilIcon.fontFamily,
+    content: pencilIcon.content,
+    customIcon: true,
+  },
+  {
+    text: '4. History',
+    fontFamily: historyIcon.fontFamily,
+    content: historyIcon.content,
+    customIcon: true,
+  },
 ];
 
 const Header = () => {
@@ -36,11 +47,11 @@ const IconsList = () => {
         Icons
       </Text>
       <View>
-        {icons.map(({text, name, customIcon}) => (
+        {icons.map(({text, name, customIcon, fontFamily, content}) => (
           <View key={text} style={styles.iconRow}>
             <Text style={styles.sectionDescription}>{text}</Text>
             {customIcon ? (
-              <CustomIcon name={name} />
+              <Text style={{fontFamily}}>{content}</Text>
             ) : (
               <IconAntDesign name={name} />
             )}
