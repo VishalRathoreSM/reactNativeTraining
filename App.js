@@ -11,12 +11,13 @@ import {LogBox} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {Provider} from 'react-redux';
 
-import {store} from './src/store';
+import store from './src/store';
 
 import BookForm from './src/components/library-app-2/book-form';
 import OTP from './src/components/otp-exercise/otp';
 import PlayingWithFonts from './src/components/playing-with-fonts-exercise/playing-with-fonts';
 import Index from './src/components/library-app-2';
+import Routes from './src/components/library-app-5/navigations/routes.js';
 
 const App = () => {
   useEffect(() => {
@@ -26,10 +27,7 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      {/* <OTP />
-      <BookForm />
-      <PlayingWithFonts /> */}
-      <Index />
+      <Routes />
     </Provider>
   );
 };

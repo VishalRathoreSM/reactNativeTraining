@@ -11,7 +11,7 @@ import {
 import axios from 'axios';
 import BookForm from './book-form';
 import BookListing from './book-listing';
-import {container} from '../../assets/styles/global-styles';
+import {container} from '../../assets/styles/global';
 import {url} from '../../constants/book-form';
 
 const {isIOS, emptyArr} = global;

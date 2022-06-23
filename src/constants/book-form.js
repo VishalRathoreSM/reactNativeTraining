@@ -1,18 +1,18 @@
 export const formConfig = {
-  book: {
+  bookName: {
     type: 'text',
     label: 'Book Name',
     keyboardType: 'default',
     value: '',
-    key: 'book',
+    key: 'bookName',
     isReq: true,
   },
-  author: {
+  authorName: {
     type: 'text',
     label: 'Author Name',
     keyboardType: 'default',
     value: '',
-    key: 'author',
+    key: 'authorName',
     isReq: true,
   },
   publisher: {
@@ -49,11 +49,11 @@ export const formConfig = {
     key: 'website',
     isReq: true,
   },
-  display: {
+  displayBook: {
     type: 'checkbox',
     label: 'Do you want to display this Book in library?',
     value: false,
-    key: 'display',
+    key: 'displayBook',
     isReq: true,
   },
 };
