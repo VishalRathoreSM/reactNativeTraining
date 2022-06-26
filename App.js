@@ -17,6 +17,7 @@ import BookForm from './src/components/library-app-2/book-form';
 import OTP from './src/components/otp-exercise/otp';
 import PlayingWithFonts from './src/components/playing-with-fonts-exercise/playing-with-fonts';
 import Index from './src/components/library-app-2';
+import Index2 from './src/components/know-your-app';
 import Routes from './src/components/library-app-5/navigations/routes.js';
 
 const App = () => {
@@ -27,7 +28,8 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <Routes />
+      <Index2 />
+      {/* <Routes /> */}
     </Provider>
   );
 };
