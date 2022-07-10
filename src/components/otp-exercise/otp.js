@@ -1,60 +1,87 @@
 import React, {useEffect, useState} from 'react';
-import {TextInput, View, StyleSheet, StatusBar, Alert} from 'react-native';
+import {
+  TextInput,
+  Text,
+  View,
+  StyleSheet,
+  StatusBar,
+  Alert,
+} from 'react-native';
 
 const inputs = new Array(6).fill(0);
+const initialOtp = new Array(6).fill('');
 
 function OTP() {
-  const [otpTextInput] = useState([]);
-  const [otp, setOtp] = useState(Array(6).fill(''));
+  const [otpTextInput] = useState(() => []);
+  const [otp, setOtp] = useState(initialOtp);
+  const [activeField, setActiveField] = useState(0);
 
   useEffect(() => {
-    otpTextInput[0].focus();
-  }, []);
+    const enteredOtp = otp.join('');
 
-  const focusPrevious = (key, index) => {
-    if (key === 'Backspace' && index !== 0) otpTextInput[index - 1].focus();
+    const isOtpValid =
+      enteredOtp.length === otp.length &&
+      otp.every(value => !!value.trim() && !isNaN(value));
+
+    if (isOtpValid) {
+      Alert.alert('OTP', `OTP entered is ${enteredOtp}`);
+    } else if (!!otp[5]) {
+      Alert.alert('OTP', 'Invalid OTP');
+    }
+  }, [otp]);
+
+  const focusOnField = fieldIndex => {
+    if (fieldIndex >= 0) {
+      otpTextInput[fieldIndex].focus();
+      setActiveField(fieldIndex);
+    }
   };
 
-  const focusNext = (index, value) => {
+  const handleKeyPress = (nativeEvent, index) => {
+    console.log(nativeEvent.key);
+    if (nativeEvent.key === 'Backspace') focusOnField(index - 1);
+  };
+
+  const handleChangeText = (index, value) => {
     const newOtp = [...otp];
     newOtp[index] = value;
 
     if (index < otpTextInput.length - 1 && value) {
-      otpTextInput[index + 1].focus();
-    }
-
-    if (index === otpTextInput.length - 1 && value) {
-      otpTextInput[index].blur();
-      newOtp.every(value => value.length && !isNaN(value)) &&
-        Alert.alert('OTP', `OTP entered is ${newOtp.join('')}`);
+      focusOnField(index + 1);
     }
 
     setOtp(newOtp);
   };
 
-  const renderItem = index => {
-    return (
-      <View key={index} style={styles.item}>
-        <TextInput
-          style={styles.otpField}
-          keyboardType="numeric"
-          onChangeText={value => focusNext(index, value)}
-          onKeyPress={e => focusPrevious(e.nativeEvent.key, index)}
-          maxLength={1}
-          onSubmitEditing={() => {
-            otpTextInput[index].blur();
-            otp.every(value => value.length && !isNaN(value)) &&
-              Alert.alert('OTP', `OTP entered is ${otp.join('')}`);
-          }}
-          ref={ref => (otpTextInput[index] = ref)}
-        />
-      </View>
-    );
-  };
+  const {
+    container: containerStyle,
+    heading: headingStyle,
+    otpContainer: otpContainerStyle,
+    fieldContainer: itemStyle,
+    otpField: otpFieldStyle,
+    activeField: activeFieldStyle,
+  } = styles;
+
+  const renderItem = index => (
+    <View key={index} style={itemStyle}>
+      <TextInput
+        style={[otpFieldStyle, index == activeField && activeFieldStyle]}
+        keyboardType="numeric"
+        onChangeText={value => handleChangeText(index, value)}
+        onKeyPress={e => handleKeyPress(e.nativeEvent, index)}
+        maxLength={1}
+        autoFocus={index === 0 ? true : undefined}
+        ref={ref => (otpTextInput[index] = ref)}
+      />
+    </View>
+  );
 
   return (
-    <View style={styles.container}>
-      {inputs.map((i, index) => renderItem(index))}
+    <View style={containerStyle}>
+      <Text style={headingStyle}>Enter OTP</Text>
+      <View style={otpContainerStyle}>
+        {inputs.map((_, index) => renderItem(index))}
+      </View>
     </View>
   );
 }
@@ -65,12 +92,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: StatusBar.currentHeight || 0,
+  },
+  heading: {
+    fontSize: 25,
+    marginVertical: 20,
+  },
+  otpContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
     borderColor: '#000',
-    borderWidth: 1,
     flexDirection: 'row',
   },
-  item: {
+  fieldContainer: {
     marginHorizontal: 10,
+  },
+  activeField: {
+    borderColor: 'blue',
   },
   otpField: {
     borderColor: '#000',
