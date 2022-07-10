@@ -1,9 +1,4 @@
 {
-  "rnpm": {
-    "assets": [
-      "src/assets/fonts"
-    ]
-  },
   "name": "libraryapp",
   "version": "0.0.1",
   "private": true,
@@ -22,7 +17,6 @@
     "react": "17.0.2",
     "react-native": "0.68.2",
     "react-native-select-dropdown": "^2.0.3",
-    "react-native-vector-icons": "^9.1.0",
     "react-redux": "^8.0.2",
     "redux": "^4.2.0"
   },
