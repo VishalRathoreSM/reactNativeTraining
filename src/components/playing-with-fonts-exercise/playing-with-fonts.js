@@ -2,6 +2,7 @@ import React from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import IconAntDesign from 'react-native-vector-icons/AntDesign';
 import {customIcons} from '../../constants/custom-icons';
+import MyAppText from '../shared/my-app-text';
 
 const {pencil: pencilIcon, history: historyIcon} = customIcons;
 
@@ -23,29 +24,35 @@ const icons = [
 ];
 
 const Header = () => {
+  const {header: headerStyle, headerText: headerTextStyle} = styles;
+
   return (
-    <View style={styles.header}>
-      <Text style={styles.headerText}>React Native Fonts</Text>
+    <View style={headerStyle}>
+      <MyAppText customStyle={headerTextStyle}>React Native Fonts</MyAppText>
     </View>
   );
 };
 
 const IconsList = () => {
+  const {
+    iconHeader: iconHeaderStyle,
+    sectionContainer: sectionContainerStyle,
+    sectionTitle: sectionTitleStyle,
+    iconRow: iconRowStyle,
+    sectionDescription: sectionDescriptionStyle,
+  } = styles;
+
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {color: 'green', textTransform: 'uppercase'},
-        ]}>
+    <View style={sectionContainerStyle}>
+      <MyAppText customStyle={[sectionTitleStyle, iconHeaderStyle]}>
         Icons
-      </Text>
+      </MyAppText>
       <View>
         {icons.map(({text, name, customIcon, fontFamily, content}) => (
-          <View key={text} style={styles.iconRow}>
-            <Text style={styles.sectionDescription}>{text}</Text>
+          <View key={text} style={iconRowStyle}>
+            <MyAppText customStyle={sectionDescriptionStyle}>{text}</MyAppText>
             {customIcon ? (
-              <Text style={{fontFamily}}>{content}</Text>
+              <MyAppText customStyle={{fontFamily}}>{content}</MyAppText>
             ) : (
               <IconAntDesign name={name} />
             )}
@@ -57,30 +64,38 @@ const IconsList = () => {
 };
 
 const Section = ({children, title}) => {
+  const {
+    sectionContainer: sectionContainerStyle,
+    sectionTitle: sectionTitleStyle,
+    sectionDescription: sectionDescriptionStyle,
+  } = styles;
+
   return (
-    <View style={styles.sectionContainer}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      <Text style={styles.sectionDescription}>{children}</Text>
+    <View style={sectionContainerStyle}>
+      <MyAppText customStyle={sectionTitleStyle}>{title}</MyAppText>
+      <MyAppText customStyle={sectionDescriptionStyle}>{children}</MyAppText>
     </View>
   );
 };
 
 const PlayingWithFonts = () => {
+  const {highlight: highlightStyle} = styles;
+
   return (
     <SafeAreaView>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <Header />
         <View>
           <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
+            Edit <Text style={highlightStyle}>App.js</Text> to change this
             screen and then come back to see your edits.
           </Section>
           <Section title="See Your Changes">
-            Press <Text style={styles.highlight}>Cmd + R</Text> in the simulator
+            Press <Text style={highlightStyle}>Cmd + R</Text> in the simulator
             to reload your app's code.
           </Section>
           <Section title="Debug">
-            Press <Text style={styles.highlight}>Cmd + D</Text> in the simulator
+            Press <Text style={highlightStyle}>Cmd + D</Text> in the simulator
             or Shake your device to open the React Native debug menu.
           </Section>
         </View>
@@ -102,14 +117,13 @@ const styles = StyleSheet.create({
     color: 'brown',
     fontSize: 28,
     fontWeight: '600',
-    fontFamily: 'GochiHand-Regular',
   },
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,
   },
+  iconHeader: {color: 'green', textTransform: 'uppercase'},
   sectionTitle: {
-    fontFamily: 'GochiHand-Regular',
     fontSize: 24,
     fontWeight: '600',
     color: 'blue',
@@ -121,7 +135,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sectionDescription: {
-    fontFamily: 'GochiHand-Regular',
     marginTop: 8,
     fontSize: 18,
   },
