@@ -1,254 +1,279 @@
-import React, {useState} from 'react';
-import CheckBox from '@react-native-community/checkbox';
+import React, {useEffect, useRef, useState} from 'react';
 import {
-  StatusBar,
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
   Pressable,
   Text,
-  TextInput,
   View,
   TouchableWithoutFeedback,
   ActivityIndicator,
   Platform,
   Keyboard,
   Alert,
+  SafeAreaView,
 } from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import SelectDropdown from 'react-native-select-dropdown';
 import axios from 'axios';
-
-const dropdownData = ['Vishal', 'Nishant', 'Vicky'];
-const url = 'https://library-mock-server.herokuapp.com/';
-
-const reqFields = ['bookName', 'authorName', 'price', 'email', 'website'];
-
-const defaultFormValues = {
-  bookName: '',
-  authorName: '',
-  publisher: '',
-  price: '',
-  email: '',
-  website: '',
-  displayBook: false,
-};
+import SelectDropdown from '../shared/select-dropdown';
+import InputCheckbox from '../shared/input-checkbox';
+import InputText from '../shared/input-text';
+import {
+  getInitialFormValues,
+  renderItem,
+  formConfigArr,
+  formConfig,
+  url,
+} from '../../constants/book-form';
 
 function BookForm() {
-  const [formValues, setFormValues] = useState(defaultFormValues);
+  const [formState, setFormState] = useState(getInitialFormValues);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const dropDownRef = useRef(null);
 
-  const {bookName, authorName, price, email, website, displayBook} = formValues;
+  const {values, errors} = formState;
 
-  const formFields = [
-    {
-      label: 'Book Name',
-      keyboardType: 'default',
-      value: bookName,
-      key: 'bookName',
-    },
-    {
-      label: 'Author Name',
-      keyboardType: 'default',
-      value: authorName,
-      key: 'authorName',
-    },
-    {
-      comp: (
-        <View key="publisher" style={styles.formGroup}>
-          <Text style={styles.label}>Publishers</Text>
-          <SelectDropdown
-            data={dropdownData}
-            defaultButtonText="Select a publisher"
-            onSelect={selectedItem => {
-              handleFieldChange('publisher', selectedItem);
-            }}
-            buttonTextAfterSelection={selectedItem => selectedItem}
-            rowTextForSelection={item => item}
-            buttonStyle={styles.dropdownBtnStyle}
-            buttonTextStyle={styles.dropdownBtnTxtStyle}
-            renderDropdownIcon={isOpened => {
-              return (
-                <FontAwesome
-                  name={isOpened ? 'chevron-up' : 'chevron-down'}
-                  color="#444"
-                  size={18}
-                />
-              );
-            }}
-            dropdownIconPosition="right"
-            rowStyle={styles.dropdownRowStyle}
-            rowTextStyle={styles.dropdownRowTxtStyle}
-          />
-        </View>
-      ),
-    },
-    {label: 'Price', keyboardType: 'numeric', value: price, key: 'price'},
-    {label: 'Email', keyboardType: 'email-address', value: email, key: 'email'},
-    {label: 'Website', keyboardType: 'url', value: website, key: 'website'},
-    {
-      comp: (
-        <View key="displayBook" style={styles.checkboxContainer}>
-          <CheckBox
-            value={displayBook}
-            onValueChange={value => handleFieldChange('displayBook', value)}
-            style={styles.checkbox}
-          />
-          <Text style={styles.label}>
-            Do you want to display this Book in library?
-          </Text>
-        </View>
-      ),
-    },
-  ];
+  const {
+    containerStyle,
+    headerStyle,
+    headerTextStyle,
+    submitBtnStyle,
+    submitBtnTextStyle,
+    formStyle,
+    formGroupStyle,
+    checkboxContainerStyle,
+    checkboxStyle,
+    reqStyle,
+    labelStyle,
+    errorStyle,
+    inputStyle,
+    dropdownRowStyle,
+    dropdownBtnStyle,
+    dropdownBtnTxtStyle,
+    dropdownRowTxtStyle,
+  } = styles;
 
-  const handleFieldChange = (field, value) => {
-    setFormValues(prevFormValues => ({...prevFormValues, [field]: value}));
-  };
-
-  const validateForm = () => {
-    for (const field of reqFields) {
-      if (formValues[field].toString().trim() === '') {
-        Alert.alert('Enter required fields');
-        setIsSubmitting(false);
-        return false;
+  useEffect(() => {
+    if (isSubmitting) {
+      const hasErrors = Object.values(errors).some(Boolean);
+      if (!hasErrors) {
+        axios
+          .post(url, values)
+          .then(_ => {
+            Alert.alert('Submitted Successfully');
+            dropDownRef.current.reset();
+            setFormState(getInitialFormValues);
+          })
+          .catch(_ => Alert.alert('Something went wrong'));
       }
+
+      setIsSubmitting(false);
     }
-    return true;
+  }, [isSubmitting]);
+
+  const validateField = key => {
+    const field = formConfig[key];
+    if (field.isReq) {
+      const isEmpty = values[key].toString().trim() === '';
+      return isEmpty ? `Enter ${field.label} ` : '';
+    }
+    return '';
   };
 
   const handleSubmit = () => {
+    let errors = {};
+
+    formConfigArr.forEach(({key}) => {
+      errors[key] = validateField(key);
+    });
+
+    setFormState(prevFormState => ({
+      ...prevFormState,
+      errors,
+    }));
     setIsSubmitting(true);
-    validateForm() &&
-      axios
-        .post(url, formValues)
-        .then(_ => {
-          Alert.alert('Submitted Successfully');
-          setFormValues(defaultFormValues);
-        })
-        .catch(_ => Alert.alert('Something went wrong'))
-        .finally(() => setIsSubmitting(false));
+  };
+
+  const handleFieldChange = (field, value) => {
+    const hasError = !!errors[field];
+
+    setFormState(({values: prevValues, errors: prevErrors}) => ({
+      errors: {...prevErrors, ...(hasError && {[field]: ''})},
+      values: {...prevValues, [field]: value},
+    }));
+  };
+
+  const renderFields = () => {
+    return formConfigArr.map(
+      ({label, key, keyboardType, type, data, defaultButtonText}) => {
+        if (type === 'text') {
+          return (
+            <InputText
+              key={key}
+              styles={{
+                inputContainerStyle: formGroupStyle,
+                labelStyle,
+                inputStyle,
+                errorStyle,
+              }}
+              id={key}
+              onChangeText={handleFieldChange}
+              value={values[key]}
+              error={errors[key]}
+              placeholder={label}
+              keyboardType={keyboardType}
+              label={
+                <>
+                  {label} <Text style={reqStyle}>*</Text>{' '}
+                </>
+              }
+            />
+          );
+        } else if (type === 'checkbox') {
+          return (
+            <InputCheckbox
+              key={key}
+              styles={{checkboxContainerStyle, checkboxStyle, labelStyle}}
+              label={label}
+              id={key}
+              onValueChange={handleFieldChange}
+              value={values[key]}
+              error={errors[key]}
+            />
+          );
+        } else if (type === 'dropdown') {
+          return (
+            <SelectDropdown
+              key={key}
+              data={data}
+              styles={{
+                dropdownContainerStyle: formGroupStyle,
+                labelStyle,
+                btnStyle: dropdownBtnStyle,
+                btnTxtStyle: dropdownBtnTxtStyle,
+                rowStyle: dropdownRowStyle,
+                rowTxtStyle: dropdownRowTxtStyle,
+              }}
+              onSelect={handleFieldChange}
+              id={key}
+              label={label}
+              ref={dropDownRef}
+              defaultButtonText={defaultButtonText}
+              renderBtnTextAfterSelection={renderItem}
+              renderRowTextForSelection={renderItem}
+            />
+          );
+        }
+      },
+    );
   };
 
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={containerStyle}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : null}
         keyboardVerticalOffset={0}
-        style={{flex: 1}}>
+        style={containerStyle}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.container}>
-            <View style={styles.header}>
-              <Text style={styles.headerText}>Library Form</Text>
+          <View style={containerStyle}>
+            <View style={headerStyle}>
+              <Text style={headerTextStyle}>Library Form</Text>
             </View>
-            <ScrollView style={{flex: 1}}>
-              <View style={styles.form}>
-                {formFields.map(
-                  ({comp, label, key, value, keyboardType}) =>
-                    comp || (
-                      <View key={key} style={styles.formGroup}>
-                        <Text style={styles.label}>
-                          {label} <Text style={styles.req}>*</Text>{' '}
-                        </Text>
-                        <TextInput
-                          keyboardType={keyboardType}
-                          placeholder={label}
-                          style={styles.input}
-                          value={value}
-                          onChangeText={value => handleFieldChange(key, value)}
-                        />
-                      </View>
-                    ),
-                )}
-              </View>
+
+            <ScrollView style={containerStyle}>
+              <View style={formStyle}>{renderFields()}</View>
             </ScrollView>
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
+
       <Pressable
         onPress={handleSubmit}
         disabled={isSubmitting}
-        style={styles.submitBtn}>
+        style={submitBtnStyle}>
         {isSubmitting ? (
           <ActivityIndicator size="small" color="#0000ff" />
         ) : (
-          <Text style={styles.submitBtnText}>Submit</Text>
+          <Text style={submitBtnTextStyle}>Submit</Text>
         )}
       </Pressable>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  containerStyle: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 40,
   },
-  header: {
+  headerStyle: {
     backgroundColor: '#5DB3FF',
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerText: {
+  headerTextStyle: {
     textTransform: 'capitalize',
     color: '#800080',
     fontWeight: '800',
     fontSize: 25,
   },
-  submitBtn: {
+  submitBtnStyle: {
     height: 50,
     backgroundColor: '#90EE90',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  submitBtnText: {
+  submitBtnTextStyle: {
     textTransform: 'capitalize',
     color: '#000',
     fontWeight: '700',
     fontSize: 20,
   },
-  form: {
+  formStyle: {
     flex: 1,
     alignItems: 'center',
   },
-  formGroup: {
+  formGroupStyle: {
     width: '90%',
     marginVertical: 10,
   },
-  checkboxContainer: {
+  checkboxContainerStyle: {
     width: '90%',
     marginVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
   },
-  checkbox: {
+  checkboxStyle: {
     marginRight: 10,
   },
-  req: {
+  reqStyle: {
     color: 'red',
   },
-  label: {
+  labelStyle: {
     fontWeight: '700',
     marginVertical: 10,
   },
-  input: {
+  errorStyle: {
+    color: 'red',
+    marginTop: 10,
+  },
+  inputStyle: {
     padding: 10,
-    borderColor: '#000',
     fontSize: 15,
-    borderWidth: 2,
+    backgroundColor: 'lightblue',
     height: 40,
   },
   dropdownBtnStyle: {
     width: '100%',
     height: 40,
     padding: 10,
-    backgroundColor: '#FFF',
-    borderWidth: 2,
-    borderColor: '#000',
+    backgroundColor: 'lightblue',
   },
-  dropdownBtnTxtStyle: {color: '#444', textAlign: 'left', fontSize: 15},
+  dropdownBtnTxtStyle: {
+    color: '#444',
+    textAlign: 'left',
+    fontSize: 15,
+  },
   dropdownRowStyle: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
   dropdownRowTxtStyle: {color: '#444', textAlign: 'left'},
 });
