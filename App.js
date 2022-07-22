@@ -17,9 +17,9 @@ import OTP from './src/components/otp-exercise/otp';
 const App = () => {
   return (
     <Provider store={store}>
-      {/* <BookForm /> */}
-      {/* <OTP /> */}
-      {/* <PlayingWithFonts /> */}
+      <OTP />
+      {/* <BookForm />
+      <PlayingWithFonts /> */}
     </Provider>
   );
 };

@@ -1,86 +1,114 @@
-// import React, {useEffect, useState} from 'react';
-// import {TextInput, View, StyleSheet, StatusBar, Alert} from 'react-native';
+import React, {useState} from 'react';
+import {
+  TextInput,
+  Text,
+  View,
+  StyleSheet,
+  Alert,
+  SafeAreaView,
+} from 'react-native';
 
-// const inputs = new Array(6).fill(0);
+const inputs = new Array(6).fill('');
+const otp = [];
 
-// function OTP() {
-//   const [otpTextInput] = useState([]);
-//   const [otp, setOtp] = useState(Array(6).fill(''));
+const OTP = () => {
+  const [activeField, setActiveField] = useState(0);
 
-//   useEffect(() => {
-//     otpTextInput[0].focus();
-//   }, []);
+  const handleSubmit = () => {
+    const enteredOtp = otp.join('');
 
-//   const focusPrevious = (key, index) => {
-//     if (key === 'Backspace' && index !== 0) otpTextInput[index - 1].focus();
-//   };
+    const isOtpValid =
+      enteredOtp.length === inputs.length &&
+      otp.every(value => !!value.trim() && !isNaN(value));
 
-//   const focusNext = (index, value) => {
-//     const newOtp = [...otp];
-//     newOtp[index] = value;
+    if (isOtpValid) {
+      Alert.alert('OTP', `OTP entered is ${enteredOtp}`);
+    } else {
+      Alert.alert('OTP', 'Invalid OTP');
+    }
+  };
 
-//     if (index < otpTextInput.length - 1 && value) {
-//       otpTextInput[index + 1].focus();
-//     }
+  const focusOnField = index => index >= 0 && inputs[index].focus();
 
-//     if (index === otpTextInput.length - 1 && value) {
-//       otpTextInput[index].blur();
-//       newOtp.every(value => value.length && !isNaN(value)) &&
-//         Alert.alert('OTP', `OTP entered is ${newOtp.join('')}`);
-//     }
+  const handleKeyPress = (nativeEvent, index) =>
+    nativeEvent.key === 'Backspace' && focusOnField(index - 1);
 
-//     setOtp(newOtp);
-//   };
+  const handleChangeText = (index, value) => {
+    otp[index] = value;
 
-//   const renderItem = index => {
-//     return (
-//       <View key={index} style={styles.item}>
-//         <TextInput
-//           style={styles.otpField}
-//           keyboardType="numeric"
-//           onChangeText={value => focusNext(index, value)}
-//           onKeyPress={e => focusPrevious(e.nativeEvent.key, index)}
-//           maxLength={1}
-//           onSubmitEditing={() => {
-//             otpTextInput[index].blur();
-//             otp.every(value => value.length && !isNaN(value)) &&
-//               Alert.alert('OTP', `OTP entered is ${otp.join('')}`);
-//           }}
-//           ref={ref => (otpTextInput[index] = ref)}
-//         />
-//       </View>
-//     );
-//   };
+    if (index < inputs.length - 1 && value) {
+      focusOnField(index + 1);
+    }
 
-//   return (
-//     <View style={styles.container}>
-//       {inputs.map((i, index) => renderItem(index))}
-//     </View>
-//   );
-// }
+    if (index == inputs.length - 1) {
+      handleSubmit();
+    }
+  };
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     marginTop: StatusBar.currentHeight || 0,
-//     borderColor: '#000',
-//     borderWidth: 1,
-//     flexDirection: 'row',
-//   },
-//   item: {
-//     marginHorizontal: 10,
-//   },
-//   otpField: {
-//     borderColor: '#000',
-//     borderWidth: 1,
-//     height: 50,
-//     width: 35,
-//     padding: 5,
-//     textAlign: 'center',
-//     color: '#000',
-//   },
-// });
+  const {
+    container,
+    heading,
+    otpContainer,
+    fieldContainer,
+    otpField,
+    activeFieldS,
+  } = styles;
 
-// export default OTP;
+  const renderField = (_, index) => (
+    <View key={index} style={fieldContainer}>
+      <TextInput
+        onSubmitEditing={handleSubmit}
+        style={[otpField, index == activeField && activeFieldS]}
+        keyboardType="numeric"
+        onChangeText={value => handleChangeText(index, value)}
+        onKeyPress={e => handleKeyPress(e.nativeEvent, index)}
+        maxLength={1}
+        onFocus={() => setActiveField(index)}
+        autoFocus={index === 0 ? true : undefined}
+        ref={ref => (inputs[index] = ref)}
+      />
+    </View>
+  );
+
+  return (
+    <SafeAreaView style={container}>
+      <Text style={heading}>Enter OTP</Text>
+      <View style={otpContainer}>{inputs.map(renderField)}</View>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  heading: {
+    fontSize: 25,
+    marginVertical: 20,
+  },
+  otpContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: '#000',
+    flexDirection: 'row',
+  },
+  fieldContainer: {
+    marginHorizontal: 10,
+  },
+  activeFieldS: {
+    borderColor: 'blue',
+  },
+  otpField: {
+    borderColor: '#000',
+    borderWidth: 1,
+    height: 50,
+    width: 35,
+    padding: 5,
+    textAlign: 'center',
+    color: '#000',
+  },
+});
+
+export default OTP;
