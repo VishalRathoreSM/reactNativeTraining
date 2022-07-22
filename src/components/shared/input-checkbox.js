@@ -4,15 +4,15 @@ import React from 'react';
 import CheckBox from '@react-native-community/checkbox';
 
 const InputCheckbox = ({styles = {}, label = '', id, onValueChange, value}) => {
-  const {checkboxContainerStyle, checkboxStyle, labelStyle} = styles;
+  const {checkboxContainer, checkbox, label: labelS} = styles;
   return (
-    <View style={checkboxContainerStyle}>
+    <View style={checkboxContainer}>
       <CheckBox
         value={value}
         onValueChange={value => onValueChange(id, value)}
-        style={checkboxStyle}
+        style={checkbox}
       />
-      <Text style={labelStyle}>{label}</Text>
+      <Text style={labelS}>{label}</Text>
     </View>
   );
 };

@@ -25,7 +25,7 @@ import {
   url,
 } from '../../constants/book-form';
 
-function BookForm() {
+const BookForm = () => {
   const [formState, setFormState] = useState(getInitialFormValues);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const dropDownRef = useRef(null);
@@ -33,23 +33,23 @@ function BookForm() {
   const {values, errors} = formState;
 
   const {
-    containerStyle,
-    headerStyle,
-    headerTextStyle,
-    submitBtnStyle,
-    submitBtnTextStyle,
-    formStyle,
-    formGroupStyle,
-    checkboxContainerStyle,
-    checkboxStyle,
-    reqStyle,
-    labelStyle,
-    errorStyle,
-    inputStyle,
-    dropdownRowStyle,
-    dropdownBtnStyle,
-    dropdownBtnTxtStyle,
-    dropdownRowTxtStyle,
+    container,
+    header,
+    headerText,
+    submitBtn,
+    submitBtnText,
+    form,
+    formGroup,
+    checkboxContainer,
+    checkbox,
+    red,
+    labelS,
+    errorS,
+    inputS,
+    dropdownRow,
+    dropdownBtn,
+    dropdownBtnTxt,
+    dropdownRowTxt,
   } = styles;
 
   useEffect(() => {
@@ -110,10 +110,10 @@ function BookForm() {
             <InputText
               key={key}
               styles={{
-                inputContainerStyle: formGroupStyle,
-                labelStyle,
-                inputStyle,
-                errorStyle,
+                inputContainer: formGroup,
+                label: labelS,
+                input: inputS,
+                error: errorS,
               }}
               id={key}
               onChangeText={handleFieldChange}
@@ -123,7 +123,7 @@ function BookForm() {
               keyboardType={keyboardType}
               label={
                 <>
-                  {label} <Text style={reqStyle}>*</Text>{' '}
+                  {label} <Text style={red}>*</Text>{' '}
                 </>
               }
             />
@@ -132,7 +132,7 @@ function BookForm() {
           return (
             <InputCheckbox
               key={key}
-              styles={{checkboxContainerStyle, checkboxStyle, labelStyle}}
+              styles={{checkboxContainer, checkbox, label: labelS}}
               label={label}
               id={key}
               onValueChange={handleFieldChange}
@@ -146,12 +146,12 @@ function BookForm() {
               key={key}
               data={data}
               styles={{
-                dropdownContainerStyle: formGroupStyle,
-                labelStyle,
-                btnStyle: dropdownBtnStyle,
-                btnTxtStyle: dropdownBtnTxtStyle,
-                rowStyle: dropdownRowStyle,
-                rowTxtStyle: dropdownRowTxtStyle,
+                dropdownContainer: formGroup,
+                label: labelS,
+                btn: dropdownBtn,
+                btnTxt: dropdownBtnTxt,
+                row: dropdownRow,
+                rowTxt: dropdownRowTxt,
               }}
               onSelect={handleFieldChange}
               id={key}
@@ -168,19 +168,19 @@ function BookForm() {
   };
 
   return (
-    <SafeAreaView style={containerStyle}>
+    <SafeAreaView style={container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : null}
         keyboardVerticalOffset={0}
-        style={containerStyle}>
+        style={container}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={containerStyle}>
-            <View style={headerStyle}>
-              <Text style={headerTextStyle}>Library Form</Text>
+          <View style={container}>
+            <View style={header}>
+              <Text style={headerText}>Library Form</Text>
             </View>
 
-            <ScrollView style={containerStyle}>
-              <View style={formStyle}>{renderFields()}</View>
+            <ScrollView style={container}>
+              <View style={form}>{renderFields()}</View>
             </ScrollView>
           </View>
         </TouchableWithoutFeedback>
@@ -189,93 +189,93 @@ function BookForm() {
       <Pressable
         onPress={handleSubmit}
         disabled={isSubmitting}
-        style={submitBtnStyle}>
+        style={submitBtn}>
         {isSubmitting ? (
           <ActivityIndicator size="small" color="#0000ff" />
         ) : (
-          <Text style={submitBtnTextStyle}>Submit</Text>
+          <Text style={submitBtnText}>Submit</Text>
         )}
       </Pressable>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  containerStyle: {
+  container: {
     flex: 1,
   },
-  headerStyle: {
+  header: {
     backgroundColor: '#5DB3FF',
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerTextStyle: {
+  headerText: {
     textTransform: 'capitalize',
     color: '#800080',
     fontWeight: '800',
     fontSize: 25,
   },
-  submitBtnStyle: {
+  submitBtn: {
     height: 50,
     backgroundColor: '#90EE90',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  submitBtnTextStyle: {
+  submitBtnText: {
     textTransform: 'capitalize',
     color: '#000',
     fontWeight: '700',
     fontSize: 20,
   },
-  formStyle: {
+  form: {
     flex: 1,
     alignItems: 'center',
   },
-  formGroupStyle: {
+  formGroup: {
     width: '90%',
     marginVertical: 10,
   },
-  checkboxContainerStyle: {
+  checkboxContainer: {
     width: '90%',
     marginVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
   },
-  checkboxStyle: {
+  checkbox: {
     marginRight: 10,
   },
-  reqStyle: {
+  red: {
     color: 'red',
   },
-  labelStyle: {
+  labelS: {
     fontWeight: '700',
     marginVertical: 10,
   },
-  errorStyle: {
+  errorS: {
     color: 'red',
     marginTop: 10,
   },
-  inputStyle: {
+  inputS: {
     padding: 10,
     fontSize: 15,
     backgroundColor: 'lightblue',
     height: 40,
   },
-  dropdownBtnStyle: {
+  dropdownBtn: {
     width: '100%',
     height: 40,
     padding: 10,
     backgroundColor: 'lightblue',
   },
-  dropdownBtnTxtStyle: {
+  dropdownBtnTxt: {
     color: '#444',
     textAlign: 'left',
     fontSize: 15,
   },
-  dropdownRowStyle: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
-  dropdownRowTxtStyle: {color: '#444', textAlign: 'left'},
+  dropdownRow: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
+  dropdownRowTxt: {color: '#444', textAlign: 'left'},
 });
 
 export default BookForm;

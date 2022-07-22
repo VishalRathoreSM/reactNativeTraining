@@ -18,17 +18,10 @@ const SelectDropdown = React.forwardRef(
     },
     ref,
   ) => {
-    const {
-      dropdownContainerStyle,
-      labelStyle,
-      btnStyle,
-      btnTxtStyle,
-      rowStyle,
-      rowTxtStyle,
-    } = styles;
+    const {dropdownContainer, label: labelS, btn, btnTxt, row, rowTxt} = styles;
     return (
-      <View style={dropdownContainerStyle}>
-        <Text style={labelStyle}>{label}</Text>
+      <View style={dropdownContainer}>
+        <Text style={labelS}>{label}</Text>
         <Dropdown
           ref={ref}
           data={data}
@@ -38,8 +31,8 @@ const SelectDropdown = React.forwardRef(
           }}
           buttonTextAfterSelection={renderBtnTextAfterSelection}
           rowTextForSelection={renderRowTextForSelection}
-          buttonStyle={btnStyle}
-          buttonTextStyle={btnTxtStyle}
+          buttonStyle={btn}
+          buttonTextStyle={btnTxt}
           renderDropdownIcon={isOpened => (
             <FontAwesome
               name={isOpened ? 'chevron-up' : 'chevron-down'}
@@ -48,8 +41,8 @@ const SelectDropdown = React.forwardRef(
             />
           )}
           dropdownIconPosition="right"
-          rowStyle={rowStyle}
-          rowTextStyle={rowTxtStyle}
+          rowStyle={row}
+          rowTextStyle={rowTxt}
         />
       </View>
     );

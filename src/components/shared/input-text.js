@@ -11,18 +11,18 @@ const InputText = ({
   label = '',
   error,
 }) => {
-  const {inputContainerStyle, labelStyle, inputStyle, errorStyle} = styles;
+  const {inputContainer, label: labelS, input, error: errorS} = styles;
   return (
-    <View style={inputContainerStyle}>
-      <Text style={labelStyle}>{label}</Text>
+    <View style={inputContainer}>
+      <Text style={labelS}>{label}</Text>
       <TextInput
         keyboardType={keyboardType}
         placeholder={placeholder}
-        style={inputStyle}
+        style={input}
         value={value}
         onChangeText={value => onChangeText(id, value)}
       />
-      {!!error && <Text style={errorStyle}>{error}</Text>}
+      {!!error && <Text style={errorS}>{error}</Text>}
     </View>
   );
 };
