@@ -1,58 +1,50 @@
 import React from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import IconAntDesign from 'react-native-vector-icons/AntDesign';
-import {customIcons} from '../../constants/custom-icons';
-import MyAppText from '../shared/my-app-text';
 
-const {pencil: pencilIcon, history: historyIcon} = customIcons;
+import {IconIcomoon} from '../shared/custom-icons';
+import {GochiHandText} from '../shared/custom-text';
+import {history, pencil} from '../../constants/font-codes';
 
 const icons = [
   {text: '1. Caret up', name: 'caretup', customIcon: false},
   {text: '2. Caret down', name: 'caretdown', customIcon: false},
-  {
-    text: '3. Pencil',
-    fontFamily: pencilIcon.fontFamily,
-    content: pencilIcon.content,
-    customIcon: true,
-  },
-  {
-    text: '4. History',
-    fontFamily: historyIcon.fontFamily,
-    content: historyIcon.content,
-    customIcon: true,
-  },
+  {text: '3. Pencil', content: history, customIcon: true},
+  {text: '4. History', content: pencil, customIcon: true},
 ];
 
 const Header = () => {
-  const {header: headerStyle, headerText: headerTextStyle} = styles;
+  const {header, headerText} = styles;
 
   return (
-    <View style={headerStyle}>
-      <MyAppText customStyle={headerTextStyle}>React Native Fonts</MyAppText>
+    <View style={header}>
+      <GochiHandText customStyle={headerText}>React Native Fonts</GochiHandText>
     </View>
   );
 };
 
 const IconsList = () => {
   const {
-    iconHeader: iconHeaderStyle,
-    sectionContainer: sectionContainerStyle,
-    sectionTitle: sectionTitleStyle,
-    iconRow: iconRowStyle,
-    sectionDescription: sectionDescriptionStyle,
+    iconHeader,
+    sectionContainer,
+    sectionTitle,
+    iconRow,
+    sectionDescription,
   } = styles;
 
   return (
-    <View style={sectionContainerStyle}>
-      <MyAppText customStyle={[sectionTitleStyle, iconHeaderStyle]}>
+    <View style={sectionContainer}>
+      <GochiHandText customStyle={[sectionTitle, iconHeader]}>
         Icons
-      </MyAppText>
+      </GochiHandText>
       <View>
-        {icons.map(({text, name, customIcon, fontFamily, content}) => (
-          <View key={text} style={iconRowStyle}>
-            <MyAppText customStyle={sectionDescriptionStyle}>{text}</MyAppText>
+        {icons.map(({text, name, customIcon, content}) => (
+          <View key={text} style={iconRow}>
+            <GochiHandText customStyle={sectionDescription}>
+              {text}
+            </GochiHandText>
             {customIcon ? (
-              <MyAppText customStyle={{fontFamily}}>{content}</MyAppText>
+              <IconIcomoon content={content} />
             ) : (
               <IconAntDesign name={name} />
             )}
@@ -64,22 +56,18 @@ const IconsList = () => {
 };
 
 const Section = ({children, title}) => {
-  const {
-    sectionContainer: sectionContainerStyle,
-    sectionTitle: sectionTitleStyle,
-    sectionDescription: sectionDescriptionStyle,
-  } = styles;
+  const {sectionContainer, sectionTitle, sectionDescription} = styles;
 
   return (
-    <View style={sectionContainerStyle}>
-      <MyAppText customStyle={sectionTitleStyle}>{title}</MyAppText>
-      <MyAppText customStyle={sectionDescriptionStyle}>{children}</MyAppText>
+    <View style={sectionContainer}>
+      <GochiHandText customStyle={sectionTitle}>{title}</GochiHandText>
+      <GochiHandText customStyle={sectionDescription}>{children}</GochiHandText>
     </View>
   );
 };
 
 const PlayingWithFonts = () => {
-  const {highlight: highlightStyle} = styles;
+  const {highlight} = styles;
 
   return (
     <SafeAreaView>
@@ -87,16 +75,16 @@ const PlayingWithFonts = () => {
         <Header />
         <View>
           <Section title="Step One">
-            Edit <Text style={highlightStyle}>App.js</Text> to change this
-            screen and then come back to see your edits.
+            Edit <Text style={highlight}>App.js</Text> to change this screen and
+            then come back to see your edits.
           </Section>
           <Section title="See Your Changes">
-            Press <Text style={highlightStyle}>Cmd + R</Text> in the simulator
-            to reload your app's code.
+            Press <Text style={highlight}>Cmd + R</Text> in the simulator to
+            reload your app's code.
           </Section>
           <Section title="Debug">
-            Press <Text style={highlightStyle}>Cmd + D</Text> in the simulator
-            or Shake your device to open the React Native debug menu.
+            Press <Text style={highlight}>Cmd + D</Text> in the simulator or
+            Shake your device to open the React Native debug menu.
           </Section>
         </View>
         <IconsList />
