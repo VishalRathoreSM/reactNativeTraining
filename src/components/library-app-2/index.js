@@ -1,26 +1,58 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   KeyboardAvoidingView,
+  SafeAreaView,
+  ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
-  ScrollView,
+  RefreshControl,
 } from 'react-native';
-import globalStyles from '../../assets/styles/global-styles';
+
+import axios from 'axios';
 import BookForm from './book-form';
 import BookListing from './book-listing';
+import {container} from '../../assets/styles/global-styles';
+import {url} from '../../constants/book-form';
+
+const {isIOS, emptyArr} = global;
+
+const keyboardAvoidingViewProps = {
+  behavior: isIOS ? 'padding' : null,
+  keyboardVerticalOffset: 0,
+  style: container,
+};
+
+let isInitiallyFetching = true;
 
 const Index = () => {
+  const [books, setBooks] = useState(emptyArr);
+  const [isFetching, setIsFetching] = useState(true);
+
+  const fetchBooks = () => {
+    setIsFetching(true);
+    axios.get(url).then(res => {
+      setBooks(res.data?.books);
+      isInitiallyFetching = false;
+      setIsFetching(false);
+    });
+  };
+
+  useEffect(fetchBooks, emptyArr);
+
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : null}
-      keyboardVerticalOffset={0}
-      style={globalStyles.container}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView style={{flex: 1}}>
-          <BookListing />
-          <BookForm />
-        </ScrollView>
-      </TouchableWithoutFeedback>
+    <KeyboardAvoidingView {...keyboardAvoidingViewProps}>
+      <SafeAreaView style={container}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView
+            style={container}
+            refreshControl={
+              <RefreshControl refreshing={isFetching} onRefresh={fetchBooks} />
+            }>
+            <BookListing books={books} isFetching={isInitiallyFetching} />
+            <BookForm />
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 };

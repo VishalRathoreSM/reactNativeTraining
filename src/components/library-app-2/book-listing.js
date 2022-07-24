@@ -1,37 +1,28 @@
-import axios from 'axios';
-import React, {useEffect, useState} from 'react';
-import {FlatList, Text, View, StyleSheet} from 'react-native';
-import {libraryApiEndpoint as url} from '../../constants/library';
+import React from 'react';
+import {Text, View, StyleSheet, ActivityIndicator} from 'react-native';
+import Book from './book';
 
-const BookListing = () => {
-  const [books, setBooks] = useState([]);
+const {emptyArr} = global;
 
-  useEffect(() => {
-    axios.get(url).then(res => {
-      setBooks(res.data?.books);
-    });
-  }, []);
+const BookListing = ({books = emptyArr, isFetching = true}) => {
+  const {booksList} = styles;
 
   return (
-    <View>
-      <FlatList
-        data={books}
-        renderItem={({item}) => (
-          <Text style={styles.item}>{item.bookName}</Text>
-        )}
-        keyExtractor={item => item.bookName}
-      />
+    <View style={booksList}>
+      {isFetching ? (
+        <ActivityIndicator size="large" color="pink" />
+      ) : !!books.length ? (
+        books.map(data => <Book key={data.bookName} data={data} />)
+      ) : (
+        <Text>No Books Present</Text>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  item: {
-    backgroundColor: '#f9c2ff',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    fontWeight: 'bold',
+  booksList: {
+    marginVertical: 10,
   },
 });
 
