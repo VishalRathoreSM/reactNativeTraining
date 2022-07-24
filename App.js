@@ -8,6 +8,7 @@
 
 import React, {useEffect} from 'react';
 import {LogBox} from 'react-native';
+import SplashScreen from 'react-native-splash-screen';
 import {Provider} from 'react-redux';
 
 import {store} from './src/store';
@@ -20,6 +21,7 @@ import Index from './src/components/library-app-2';
 const App = () => {
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+    SplashScreen.hide();
   }, []);
 
   return (
