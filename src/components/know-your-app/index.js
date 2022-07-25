@@ -1,5 +1,5 @@
-import {StyleSheet, Text, View, SafeAreaView} from 'react-native';
 import React, {useState, useEffect} from 'react';
+import {StyleSheet, Text, View, SafeAreaView} from 'react-native';
 import {
   getVersion,
   getBuildNumber,
@@ -7,44 +7,49 @@ import {
   getDeviceType,
   getSerialNumber,
 } from 'react-native-device-info';
-import globalStyles from '../../assets/styles/global-styles';
+
+import {container} from '../../assets/styles/global';
+
+const {emptyArr} = global;
+
+const deviceInfo = [
+  {label: 'Version Number', getInfo: getVersion},
+  {label: 'Build Number', getInfo: getBuildNumber},
+  {label: 'Application Name', getInfo: getApplicationName},
+  {label: 'Device Type', getInfo: getDeviceType},
+];
 
 const Index = () => {
   const [serialNo, setSerialNo] = useState('');
 
   useEffect(() => {
-    getSerialNumber().then(res => {
-      setSerialNo(res);
-    });
-  }, []);
+    getSerialNumber().then(setSerialNo);
+  }, emptyArr);
 
-  const info = [
-    {label: 'Version Number', func: getVersion},
-    {label: 'Build Number', func: getBuildNumber},
-    {label: 'Application Name', func: getApplicationName},
-    {label: 'Device Type', func: getDeviceType},
-    {label: 'Serial Number', value: serialNo},
-  ];
+  const {heading, item, itemText} = styles;
 
   return (
-    <SafeAreaView styles={globalStyles.container}>
+    <SafeAreaView styles={container}>
       <View>
-        <Text style={styles.heading}>Device Info</Text>
+        <Text style={heading}>Device Info</Text>
       </View>
       <View>
-        {info.map(({label, func, value}) => (
-          <View key={label} style={styles.item}>
-            <Text style={styles.itemText}>{label}</Text>
+        {deviceInfo.map(({label, getInfo}) => (
+          <View key={label} style={item}>
+            <Text style={itemText}>{label}</Text>
             <Text>:</Text>
-            <Text style={styles.itemText}>{func ? func() : value}</Text>
+            <Text style={itemText}>{getInfo()}</Text>
           </View>
         ))}
+        <View style={item}>
+          <Text style={itemText}>Serial Number</Text>
+          <Text>:</Text>
+          <Text style={itemText}>{serialNo}</Text>
+        </View>
       </View>
     </SafeAreaView>
   );
 };
-
-export default Index;
 
 const styles = StyleSheet.create({
   heading: {
@@ -62,3 +67,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+export default Index;
