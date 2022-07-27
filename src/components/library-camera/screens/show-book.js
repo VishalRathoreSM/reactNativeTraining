@@ -4,7 +4,7 @@ import {StyleSheet, Text, View, Image} from 'react-native';
 import {formConfig} from '../../../constants/book-form';
 import {startCase} from '../../../helpers/global';
 
-const {photo} = formConfig;
+const {photo, qrCode} = formConfig;
 
 const {emptyArr} = global;
 
@@ -23,7 +23,7 @@ const ShowBook = ({navigation, route: {params}}) => {
         Object.entries(params).map(([key, value]) => (
           <View key={key} style={bookInfo}>
             <Text style={label}>{startCase(key)}</Text>
-            {key == photo.key ? (
+            {key == photo.key || key == qrCode.key ? (
               <Image
                 style={image}
                 source={{

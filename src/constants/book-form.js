@@ -62,6 +62,12 @@ export const formConfig = {
     value: '',
     isReq: true,
   },
+  qrCode: {
+    type: 'qrCode',
+    key: 'qrCode',
+    value: '',
+    isReq: true,
+  },
 };
 
 export const formConfigArr = Object.values(formConfig);

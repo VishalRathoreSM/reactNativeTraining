@@ -3,10 +3,17 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import {BookForm, BookListing, ShowBook, CapturePhoto} from '../screens';
+import {
+  BookForm,
+  BookListing,
+  ShowBook,
+  CapturePhoto,
+  BookLocation,
+} from '../screens';
 import navigationRoutes from '../../../constants/navigation-routes';
 
-const {BOOK_LISTING, SHOW_BOOK, CREATE_BOOK, CAPTURE_PHOTO} = navigationRoutes;
+const {BOOK_LISTING, SHOW_BOOK, CREATE_BOOK, CAPTURE_PHOTO, BOOK_LOCATION} =
+  navigationRoutes;
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +40,11 @@ const Routes = () => {
           name={CAPTURE_PHOTO}
           options={{title: 'Camera'}}
           component={CapturePhoto}
+        />
+        <Stack.Screen
+          name={BOOK_LOCATION}
+          options={{title: 'Location'}}
+          component={BookLocation}
         />
       </Stack.Navigator>
     </NavigationContainer>
