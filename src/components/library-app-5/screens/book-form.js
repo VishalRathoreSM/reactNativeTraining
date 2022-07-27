@@ -6,24 +6,46 @@ import {
   View,
   ActivityIndicator,
   Alert,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 
-import SelectDropdown from '../shared/select-dropdown';
-import InputCheckbox from '../shared/input-checkbox';
-import InputText from '../shared/input-text';
+import SelectDropdown from '../../shared/select-dropdown';
+import InputCheckbox from '../../shared/input-checkbox';
+import InputText from '../../shared/input-text';
 import {
   getInitialFormValues,
   renderItem,
   formConfigArr,
   formConfig,
   url,
-} from '../../constants/book-form';
-import {container} from '../../assets/styles/global';
+} from '../../../constants/book-form';
+import {container} from '../../../assets/styles/global';
+import {getBooks, setBooks} from '../../../store/slices/books';
+import navigationRoutes from '../../../constants/navigation-routes';
+import {Navigate} from '../../../helpers/routes';
 
-const BookForm = () => {
+const {BOOK_LISTING} = navigationRoutes;
+
+const {isIOS} = global;
+
+const keyboardAvoidingViewProps = {
+  behavior: isIOS ? 'padding' : null,
+  keyboardVerticalOffset: 40,
+  style: container,
+};
+
+const BookForm = ({navigation}) => {
+  const books = useSelector(getBooks);
   const [formState, setFormState] = useState(getInitialFormValues);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useDispatch();
   const dropDownRef = useRef(null);
 
   const {values, errors} = formState;
@@ -53,10 +75,14 @@ const BookForm = () => {
       if (!hasErrors) {
         axios
           .post(url, values)
-          .then(_ => {
+          .then(async _ => {
             Alert.alert('Submitted Successfully');
             dropDownRef.current.reset();
             setFormState(getInitialFormValues);
+            let newBooks = [...books, {...values}];
+            await AsyncStorage.setItem('books', JSON.stringify(newBooks));
+            dispatch(setBooks(newBooks));
+            Navigate(navigation, BOOK_LISTING);
           })
           .catch(_ => Alert.alert('Something went wrong'));
       }
@@ -163,25 +189,30 @@ const BookForm = () => {
   };
 
   return (
-    <View style={container}>
-      <View style={header}>
-        <Text style={headerText}>Library Form</Text>
-      </View>
-
-      <View style={container}>
-        <View style={form}>{renderFields()}</View>
-      </View>
-      <Pressable
-        onPress={handleSubmit}
-        disabled={isSubmitting}
-        style={submitBtn}>
-        {isSubmitting ? (
-          <ActivityIndicator size="small" color="#0000ff" />
-        ) : (
-          <Text style={submitBtnText}>Submit</Text>
-        )}
-      </Pressable>
-    </View>
+    <SafeAreaView style={container}>
+      <KeyboardAvoidingView {...keyboardAvoidingViewProps}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={container}>
+            <View style={header}>
+              <Text style={headerText}>Library Form</Text>
+            </View>
+            <ScrollView style={container}>
+              <View style={form}>{renderFields()}</View>
+            </ScrollView>
+            <Pressable
+              onPress={handleSubmit}
+              disabled={isSubmitting}
+              style={submitBtn}>
+              {isSubmitting ? (
+                <ActivityIndicator size="small" color="#0000ff" />
+              ) : (
+                <Text style={submitBtnText}>Submit</Text>
+              )}
+            </Pressable>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
