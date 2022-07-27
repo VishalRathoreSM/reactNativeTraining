@@ -29,15 +29,16 @@ import {
   formConfig,
   url,
 } from '../../../constants/book-form';
+import navigationRoutes from '../../../constants/navigation-routes';
 import {container, aICenter} from '../../../assets/styles/global';
 import {getBooks, setBooks} from '../../../store/slices/books';
-import navigationRoutes from '../../../constants/navigation-routes';
 import {Navigate, Push} from '../../../helpers/routes';
 import {LaunchImageLibrary} from '../../../helpers/gallery';
+import {getQrCodeUrl, getRandomInRange} from '../../../helpers/global';
 
 const {BOOK_LISTING, CAPTURE_PHOTO} = navigationRoutes;
 
-const {photo} = formConfig;
+const {photo, qrCode} = formConfig;
 
 const {isIOS} = global;
 
@@ -117,6 +118,14 @@ const BookForm = ({navigation, route}) => {
         handleFieldChange(photo.key, route.params.imageUri);
     }, [route.params]),
   );
+
+  const getQrCode = () => {
+    const data = {
+      latitude: getRandomInRange(-90, 90, 3),
+      longitude: getRandomInRange(-180, 180, 3),
+    };
+    handleFieldChange(qrCode.key, getQrCodeUrl(data));
+  };
 
   const openGallery = () => {
     LaunchImageLibrary(options, response => {
@@ -251,6 +260,26 @@ const BookForm = ({navigation, route}) => {
               </View>
             </View>
           );
+        } else if (type == 'qrCode') {
+          return (
+            <View key={key} style={formGroup}>
+              <View style={imageContainer}>
+                {!!values[key] && (
+                  <View style={imageContainer}>
+                    <Image
+                      style={image}
+                      source={{
+                        uri: values[key],
+                      }}
+                    />
+                  </View>
+                )}
+              </View>
+              <TouchableOpacity style={aICenter} onPress={getQrCode}>
+                <Text style={btn}>Generate location QR Code</Text>
+              </TouchableOpacity>
+            </View>
+          );
         }
       },
     );
@@ -265,14 +294,7 @@ const BookForm = ({navigation, route}) => {
               <Text style={headerText}>Library Form</Text>
             </View>
             <ScrollView style={container}>
-              <View style={form}>
-                {renderFields()}
-                <View style={formGroup}>
-                  <Pressable style={aICenter} onPress={openCameraScreen}>
-                    <Text style={btn}>Scan QR Code</Text>
-                  </Pressable>
-                </View>
-              </View>
+              <View style={form}>{renderFields()}</View>
             </ScrollView>
             <Pressable
               onPress={handleSubmit}

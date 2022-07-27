@@ -17,7 +17,7 @@ import {url} from '../../../constants/book-form';
 import navigationRoutes from '../../../constants/navigation-routes';
 import {Push} from '../../../helpers/routes';
 
-const {SHOW_BOOK, CREATE_BOOK} = navigationRoutes;
+const {SHOW_BOOK, CREATE_BOOK, CAPTURE_PHOTO} = navigationRoutes;
 
 const {emptyArr} = global;
 
@@ -62,6 +62,8 @@ const BookListing = ({navigation}) => {
 
   const onAddBookPress = () => Push(navigation, CREATE_BOOK);
 
+  const onScanQr = () => Push(navigation, CAPTURE_PHOTO, {isScan: true});
+
   const {addBookBtn, book, booksList, btnText} = styles;
 
   return (
@@ -79,6 +81,10 @@ const BookListing = ({navigation}) => {
       ) : (
         <Text>No Books Present</Text>
       )}
+
+      <TouchableOpacity style={addBookBtn} onPress={onScanQr}>
+        <Text style={btnText}>Scan QR Code</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity style={addBookBtn} onPress={onAddBookPress}>
         <Text style={btnText}>Add Book</Text>
@@ -98,6 +104,7 @@ const styles = StyleSheet.create({
   addBookBtn: {
     backgroundColor: '#4285F4',
     marginHorizontal: 20,
+    marginTop: 20,
     borderRadius: 10,
     height: 50,
     alignItems: 'center',
