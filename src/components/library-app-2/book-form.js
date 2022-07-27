@@ -1,218 +1,281 @@
-// import React, {useState} from 'react';
-// import CheckBox from '@react-native-community/checkbox';
-// import {
-//   StatusBar,
-//   StyleSheet,
-//   KeyboardAvoidingView,
-//   ScrollView,
-//   Pressable,
-//   Text,
-//   TextInput,
-//   View,
-// } from 'react-native';
-// import FontAwesome from 'react-native-vector-icons/FontAwesome';
-// import SelectDropdown from 'react-native-select-dropdown';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+  Pressable,
+  Text,
+  View,
+  TouchableWithoutFeedback,
+  ActivityIndicator,
+  Platform,
+  Keyboard,
+  Alert,
+  SafeAreaView,
+} from 'react-native';
+import axios from 'axios';
+import SelectDropdown from '../shared/select-dropdown';
+import InputCheckbox from '../shared/input-checkbox';
+import InputText from '../shared/input-text';
+import {
+  getInitialFormValues,
+  renderItem,
+  formConfigArr,
+  formConfig,
+  url,
+} from '../../constants/book-form';
 
-// const data = ['Vishal', 'nishant', 'Vicky'];
+const BookForm = () => {
+  const [formState, setFormState] = useState(getInitialFormValues);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const dropDownRef = useRef(null);
 
-// function BookForm() {
-//   const [formValues, setFormValues] = useState({
-//     bookName: '',
-//     authorName: '',
-//     publisher: '',
-//     price: '',
-//     email: '',
-//     website: '',
-//     displayBook: false,
-//   });
+  const {values, errors} = formState;
 
-//   const {bookName, authorName, price, email, website, displayBook} = formValues;
+  const {
+    container,
+    header,
+    headerText,
+    submitBtn,
+    submitBtnText,
+    form,
+    formGroup,
+    checkboxContainer,
+    checkbox,
+    red,
+    labelS,
+    errorS,
+    inputS,
+    dropdownRow,
+    dropdownBtn,
+    dropdownBtnTxt,
+    dropdownRowTxt,
+  } = styles;
 
-//   const formFields = [
-//     {
-//       label: 'Book Name',
-//       keyboardType: 'default',
-//       value: bookName,
-//       key: 'bookName',
-//     },
-//     {
-//       label: 'Author Name',
-//       keyboardType: 'default',
-//       value: authorName,
-//       key: 'authorName',
-//     },
-//     {
-//       key: 'publisher',
-//       Comp: () => (
-//         <View style={styles.formGroup}>
-//           <Text style={styles.label}>Publishers</Text>
-//           <SelectDropdown
-//             data={data}
-//             defaultButtonText="Select a publisher"
-//             onSelect={selectedItem => {
-//               handleFieldChange('publisher', selectedItem);
-//             }}
-//             buttonTextAfterSelection={selectedItem => {
-//               return selectedItem;
-//             }}
-//             rowTextForSelection={item => {
-//               return item;
-//             }}
-//             buttonStyle={styles.dropdownBtnStyle}
-//             buttonTextStyle={styles.dropdownBtnTxtStyle}
-//             renderDropdownIcon={isOpened => {
-//               return (
-//                 <FontAwesome
-//                   name={isOpened ? 'chevron-up' : 'chevron-down'}
-//                   color={'#444'}
-//                   size={18}
-//                 />
-//               );
-//             }}
-//             dropdownIconPosition={'right'}
-//             rowStyle={styles.dropdownRowStyle}
-//             rowTextStyle={styles.dropdownRowTxtStyle}
-//           />
-//         </View>
-//       ),
-//     },
-//     {label: 'Price', keyboardType: 'numeric', value: price, key: 'price'},
-//     {label: 'Email', keyboardType: 'email-address', value: email, key: 'email'},
-//     {label: 'Website', keyboardType: 'url', value: website, key: 'website'},
-//     {
-//       key: 'displayBook',
-//       Comp: () => (
-//         <View style={styles.checkboxContainer}>
-//           <CheckBox
-//             value={displayBook}
-//             onValueChange={value => handleFieldChange('displayBook', value)}
-//             style={styles.checkbox}
-//           />
-//           <Text style={styles.label}>
-//             Do you want to display this Book in library?
-//           </Text>
-//         </View>
-//       ),
-//     },
-//   ];
+  useEffect(() => {
+    if (isSubmitting) {
+      const hasErrors = Object.values(errors).some(Boolean);
+      if (!hasErrors) {
+        axios
+          .post(url, values)
+          .then(_ => {
+            Alert.alert('Submitted Successfully');
+            dropDownRef.current.reset();
+            setFormState(getInitialFormValues);
+          })
+          .catch(_ => Alert.alert('Something went wrong'));
+      }
 
-//   const handleFieldChange = (field, value) => {
-//     setFormValues(prevFormValues => ({...prevFormValues, [field]: value}));
-//   };
+      setIsSubmitting(false);
+    }
+  }, [isSubmitting]);
 
-//   const handleSubmit = () => {};
+  const validateField = key => {
+    const field = formConfig[key];
+    if (field.isReq) {
+      const isEmpty = values[key].toString().trim() === '';
+      return isEmpty ? `Enter ${field.label} ` : '';
+    }
+    return '';
+  };
 
-//   return (
-//     <KeyboardAvoidingView enabled behavior="padding" style={{flex: 1}}>
-//       <View style={styles.container}>
-//         <View style={styles.header}>
-//           <Text style={styles.headerText}>Library Form</Text>
-//         </View>
-//         <ScrollView style={{flex: 1}}>
-//           <View style={styles.form}>
-//             {formFields.map(({Comp, label, key, value, keyboardType}) =>
-//               Comp ? (
-//                 <Comp key={key} />
-//               ) : (
-//                 <View key={key} style={styles.formGroup}>
-//                   <Text style={styles.label}>
-//                     {label} <Text style={styles.req}>*</Text>{' '}
-//                   </Text>
-//                   <TextInput
-//                     keyboardType={keyboardType}
-//                     placeholder={label}
-//                     style={styles.input}
-//                     value={value}
-//                     onChangeText={value => handleFieldChange(key, value)}
-//                   />
-//                 </View>
-//               ),
-//             )}
-//           </View>
-//         </ScrollView>
-//         <Pressable
-//           onPress={handleSubmit}
-//           style={({pressed}) => [styles.submitBtn]}>
-//           <Text style={styles.submitBtnText}>Submit</Text>
-//         </Pressable>
-//       </View>
-//     </KeyboardAvoidingView>
-//   );
-// }
+  const handleSubmit = () => {
+    let errors = {};
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     marginTop: StatusBar.currentHeight || 40,
-//   },
-//   header: {
-//     backgroundColor: '#5DB3FF',
-//     height: 50,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   headerText: {
-//     textTransform: 'capitalize',
-//     color: '#800080',
-//     fontWeight: '800',
-//     fontSize: 25,
-//   },
-//   submitBtn: {
-//     height: 50,
-//     backgroundColor: '#90EE90',
-//     display: 'flex',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   submitBtnText: {
-//     textTransform: 'capitalize',
-//     color: '#000',
-//     fontWeight: '700',
-//     fontSize: 20,
-//   },
-//   form: {
-//     flex: 1,
-//     justifyContent: 'flex-start',
-//     alignItems: 'center',
-//   },
-//   formGroup: {
-//     width: '90%',
-//     marginVertical: 10,
-//   },
-//   checkboxContainer: {
-//     width: '90%',
-//     marginVertical: 10,
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//   },
-//   checkbox: {
-//     marginRight: 10,
-//   },
-//   req: {
-//     color: 'red',
-//   },
-//   label: {
-//     fontWeight: '700',
-//     marginVertical: 10,
-//   },
-//   input: {
-//     padding: 10,
-//     borderColor: '#000',
-//     fontSize: 15,
-//     borderWidth: 2,
-//     height: 40,
-//   },
-//   dropdownBtnStyle: {
-//     width: '100%',
-//     height: 40,
-//     padding: 10,
-//     backgroundColor: '#FFF',
-//     borderWidth: 2,
-//     borderColor: '#000',
-//   },
-//   dropdownBtnTxtStyle: {color: '#444', textAlign: 'left', fontSize: 15},
-//   dropdownRowStyle: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
-//   dropdownRowTxtStyle: {color: '#444', textAlign: 'left'},
-// });
+    formConfigArr.forEach(({key}) => {
+      errors[key] = validateField(key);
+    });
 
-// export default BookForm;
+    setFormState(prevFormState => ({
+      ...prevFormState,
+      errors,
+    }));
+    setIsSubmitting(true);
+  };
+
+  const handleFieldChange = (field, value) => {
+    const hasError = !!errors[field];
+
+    setFormState(({values: prevValues, errors: prevErrors}) => ({
+      errors: {...prevErrors, ...(hasError && {[field]: ''})},
+      values: {...prevValues, [field]: value},
+    }));
+  };
+
+  const renderFields = () => {
+    return formConfigArr.map(
+      ({label, key, keyboardType, type, data, defaultButtonText}) => {
+        if (type === 'text') {
+          return (
+            <InputText
+              key={key}
+              styles={{
+                inputContainer: formGroup,
+                label: labelS,
+                input: inputS,
+                error: errorS,
+              }}
+              id={key}
+              onChangeText={handleFieldChange}
+              value={values[key]}
+              error={errors[key]}
+              placeholder={label}
+              keyboardType={keyboardType}
+              label={
+                <>
+                  {label} <Text style={red}>*</Text>{' '}
+                </>
+              }
+            />
+          );
+        } else if (type === 'checkbox') {
+          return (
+            <InputCheckbox
+              key={key}
+              styles={{checkboxContainer, checkbox, label: labelS}}
+              label={label}
+              id={key}
+              onValueChange={handleFieldChange}
+              value={values[key]}
+              error={errors[key]}
+            />
+          );
+        } else if (type === 'dropdown') {
+          return (
+            <SelectDropdown
+              key={key}
+              data={data}
+              styles={{
+                dropdownContainer: formGroup,
+                label: labelS,
+                btn: dropdownBtn,
+                btnTxt: dropdownBtnTxt,
+                row: dropdownRow,
+                rowTxt: dropdownRowTxt,
+              }}
+              onSelect={handleFieldChange}
+              id={key}
+              label={label}
+              ref={dropDownRef}
+              defaultButtonText={defaultButtonText}
+              renderBtnTextAfterSelection={renderItem}
+              renderRowTextForSelection={renderItem}
+            />
+          );
+        }
+      },
+    );
+  };
+
+  return (
+    <SafeAreaView style={container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : null}
+        keyboardVerticalOffset={0}
+        style={container}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={container}>
+            <View style={header}>
+              <Text style={headerText}>Library Form</Text>
+            </View>
+
+            <ScrollView style={container}>
+              <View style={form}>{renderFields()}</View>
+            </ScrollView>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+
+      <Pressable
+        onPress={handleSubmit}
+        disabled={isSubmitting}
+        style={submitBtn}>
+        {isSubmitting ? (
+          <ActivityIndicator size="small" color="#0000ff" />
+        ) : (
+          <Text style={submitBtnText}>Submit</Text>
+        )}
+      </Pressable>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    backgroundColor: '#5DB3FF',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerText: {
+    textTransform: 'capitalize',
+    color: '#800080',
+    fontWeight: '800',
+    fontSize: 25,
+  },
+  submitBtn: {
+    height: 50,
+    backgroundColor: '#90EE90',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  submitBtnText: {
+    textTransform: 'capitalize',
+    color: '#000',
+    fontWeight: '700',
+    fontSize: 20,
+  },
+  form: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  formGroup: {
+    width: '90%',
+    marginVertical: 10,
+  },
+  checkboxContainer: {
+    width: '90%',
+    marginVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  checkbox: {
+    marginRight: 10,
+  },
+  red: {
+    color: 'red',
+  },
+  labelS: {
+    fontWeight: '700',
+    marginVertical: 10,
+  },
+  errorS: {
+    color: 'red',
+    marginTop: 10,
+  },
+  inputS: {
+    padding: 10,
+    fontSize: 15,
+    backgroundColor: 'lightblue',
+    height: 40,
+  },
+  dropdownBtn: {
+    width: '100%',
+    height: 40,
+    padding: 10,
+    backgroundColor: 'lightblue',
+  },
+  dropdownBtnTxt: {
+    color: '#444',
+    textAlign: 'left',
+    fontSize: 15,
+  },
+  dropdownRow: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
+  dropdownRowTxt: {color: '#444', textAlign: 'left'},
+});
+
+export default BookForm;
