@@ -19,6 +19,7 @@ import PlayingWithFonts from './src/components/playing-with-fonts-exercise/playi
 import Index from './src/components/library-app-2';
 import Index2 from './src/components/know-your-app';
 import Routes from './src/components/library-app-5/navigations/routes.js';
+import Routes2 from './src/components/library-camera/navigations/routes.js';
 
 const App = () => {
   useEffect(() => {
@@ -28,8 +29,7 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <Index2 />
-      {/* <Routes /> */}
+      <Routes2 />
     </Provider>
   );
 };

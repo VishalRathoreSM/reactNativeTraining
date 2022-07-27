@@ -24,7 +24,6 @@ export const formConfig = {
     defaultButtonText: 'Select a publisher',
     isReq: false,
   },
-
   price: {
     type: 'text',
     label: 'Price',
@@ -54,6 +53,13 @@ export const formConfig = {
     label: 'Do you want to display this Book in library?',
     value: false,
     key: 'displayBook',
+    isReq: true,
+  },
+  photo: {
+    type: 'image',
+    key: 'photo',
+    label: 'Book Photo',
+    value: '',
     isReq: true,
   },
 };

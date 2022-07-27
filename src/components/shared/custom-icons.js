@@ -5,6 +5,6 @@ const icomoonStyles = {
   fontFamily: 'icomoon',
 };
 
-export const IconIcomoon = ({content}) => (
-  <Text style={icomoonStyles}>{content}</Text>
+export const IconIcomoon = ({content, customStyle}) => (
+  <Text style={[icomoonStyles, customStyle]}>{content}</Text>
 );
