@@ -1,19 +1,14 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
   StyleSheet,
-  KeyboardAvoidingView,
-  ScrollView,
   Pressable,
   Text,
   View,
-  TouchableWithoutFeedback,
   ActivityIndicator,
-  Platform,
-  Keyboard,
   Alert,
-  SafeAreaView,
 } from 'react-native';
 import axios from 'axios';
+
 import SelectDropdown from '../shared/select-dropdown';
 import InputCheckbox from '../shared/input-checkbox';
 import InputText from '../shared/input-text';
@@ -24,6 +19,7 @@ import {
   formConfig,
   url,
 } from '../../constants/book-form';
+import {container} from '../../assets/styles/global-styles';
 
 const BookForm = () => {
   const [formState, setFormState] = useState(getInitialFormValues);
@@ -33,7 +29,6 @@ const BookForm = () => {
   const {values, errors} = formState;
 
   const {
-    container,
     header,
     headerText,
     submitBtn,
@@ -168,24 +163,14 @@ const BookForm = () => {
   };
 
   return (
-    <SafeAreaView style={container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : null}
-        keyboardVerticalOffset={0}
-        style={container}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={container}>
-            <View style={header}>
-              <Text style={headerText}>Library Form</Text>
-            </View>
+    <View style={container}>
+      <View style={header}>
+        <Text style={headerText}>Library Form</Text>
+      </View>
 
-            <ScrollView style={container}>
-              <View style={form}>{renderFields()}</View>
-            </ScrollView>
-          </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
-
+      <View style={container}>
+        <View style={form}>{renderFields()}</View>
+      </View>
       <Pressable
         onPress={handleSubmit}
         disabled={isSubmitting}
@@ -196,14 +181,11 @@ const BookForm = () => {
           <Text style={submitBtnText}>Submit</Text>
         )}
       </Pressable>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   header: {
     backgroundColor: '#5DB3FF',
     height: 50,
